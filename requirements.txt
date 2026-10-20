@@ -1,0 +1,48 @@
+# Web
+fastapi
+uvicorn[standard]
+streamlit
+python-multipart
+slowapi
+websockets
+
+# Data & validation
+pydantic
+pydantic-settings
+python-dotenv
+requests
+plotly
+
+# Imaging
+pillow
+numpy
+pydicom
+
+# ML
+torch
+torchvision
+
+# Database
+sqlalchemy
+alembic
+asyncpg
+psycopg2-binary
+aiosqlite
+
+# Auth
+python-jose[cryptography]
+bcrypt
+
+# Reports
+reportlab
+
+# Dev / ops
+httpx
+websocket-client
+pandas
+
+# Training extras
+scikit-learn>=1.4
+matplotlib>=3.8
+tqdm>=4.66
+seaborn>=0.13

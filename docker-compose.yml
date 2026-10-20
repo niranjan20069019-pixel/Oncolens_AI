@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: oncolens
+      POSTGRES_PASSWORD: oncolens
+      POSTGRES_DB: oncolens
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U oncolens"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://oncolens:oncolens@postgres:5432/oncolens
+      SECRET_KEY: ${SECRET_KEY:-production-change-me}
+      ALLOWED_ORIGINS: http://127.0.0.1:8501,http://localhost:8501
+      ML_DEVICE: cpu
+      LOG_LEVEL: INFO
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+
+  dashboard:
+    build: .
+    command: >
+      streamlit run app/frontend/dashboard.py
+      --server.port 8501
+      --server.address 0.0.0.0
+      --server.headless true
+    ports:
+      - "8501:8501"
+    environment:
+      ONCOLENS_API_URL: http://api:8000
+      STREAMLIT_SERVER_HEADLESS: "true"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
